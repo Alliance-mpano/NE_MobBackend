@@ -1,20 +1,8 @@
-const { User, validUser, validLoginUser } = require('../models/user.model')
-const jwt = require('jsonwebtoken')
+
 require('dotenv').config()
-const bcrypt = require('bcrypt')
 
 const KEY = process.env.SECRET_KEY;
 
-// const generateToken = async (meter_number, amount) => {
-//     try {
-
-//         const token = jwt.sign({ id: result._id }, KEY, { expiresIn: '6h' })       
-//         return token;
-//     }
-//     catch (err) {
-//         return null;
-//     }
-// }
 // Function to generate a random string of specified length
 function generateRandomString(length) {
     const min = 10000000; // Minimum value (inclusive) for an 8-digit number

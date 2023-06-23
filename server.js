@@ -7,7 +7,11 @@ const PORT = process.env.PORT || 2000
 const app = express();
 
 app.use(json)
-app.use(cors())
+app.use(cors({
+    origin: "exp://192.168.8.117:19001",
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}))
 
 require('./src/config/db')
 const purchaseRoutes = require('./src/routes/purchase.routes');

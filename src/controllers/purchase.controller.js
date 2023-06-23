@@ -4,8 +4,10 @@ const { PurchasedTokens } = require('../models/purchased_tokens.model');
 require('dotenv').config()
 
 const recordPurchase = async (req, res) => {
+    console.log("Reached")
     try {
         const purchaseData = req.body;
+        console.log(purchaseData)
         const meterData = {
             meter_number: purchaseData.meter_number
         }
@@ -16,17 +18,21 @@ const recordPurchase = async (req, res) => {
         }
         else {
             const meterExist = await Meter.findOne({ meter_number: purchaseData.meter_number })
-            const meter = null;
+             let id ='';
             if (!meterExist) {
+                console.log("New meter")
                 const newMeter = new Meter(meterData);
-                meter = await newMeter.save();
+                const meter = await newMeter.save();
+                id = meter._id
+                console.log(id)
             }
+            console.log("After new meter")
             if(purchaseData.amount %100!=0 || purchaseData.amount>=1825000){
                 return res.send("Invalid amount, You can consider using a value greater than 100rwf, that is also a multiple of 100rwf, but not greater than 1 825 000rwf")
             }
             const tokenInfo = generateToken(purchaseData.meter_number, purchaseData.amount);
             const purchaseTransactionInformation =  new PurchasedTokens({
-                meter_number: meterExist._id||meter._id,
+                meter_number: meterExist._id||id,
                 token: tokenInfo.token,
                 token_value_days: tokenInfo.token_value_days,
                 amount: purchaseData.amount
@@ -72,13 +78,14 @@ const listPurchaseHistory = async (req, res) => {
 
 const validateToken = async(req, res) => {
     const token =Number.parseInt(req.body.token);
+    console.log(token)
     const tokenRegistered = await PurchasedTokens.findOne({token:token});
     // if(!tokenRegistered){
     //     return res.status(400).send("Invalid token");
     // }
     const days = tokenRegistered.token_value_days
 
-    return res.status(400).json({days: days});
+    return res.status(200).json({days: days});
 }
 
 module.exports = { recordPurchase, listPurchaseHistory, validateToken }

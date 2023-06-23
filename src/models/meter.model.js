@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Joi = require('joi')
 
 const meterSchema = mongoose.Schema({
-    meter_number: { type: String, required: true, unique: true, length: 6 },
+    meter_number: { type: String, required: true, length: 6 },
     added_at: { type: Date, default: Date.now },
 })
 

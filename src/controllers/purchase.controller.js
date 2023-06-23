@@ -27,12 +27,18 @@ const recordPurchase = async (req, res) => {
                 console.log(id)
             }
             console.log("After new meter")
+            let meterNbr
+            if(!meterExist){
+                meterNbr = id
+            }else {
+                meterNbr = meterExist._id
+            }
             if(purchaseData.amount %100!=0 || purchaseData.amount>=1825000){
                 return res.send("Invalid amount, You can consider using a value greater than 100rwf, that is also a multiple of 100rwf, but not greater than 1 825 000rwf")
             }
             const tokenInfo = generateToken(purchaseData.meter_number, purchaseData.amount);
             const purchaseTransactionInformation =  new PurchasedTokens({
-                meter_number: meterExist._id||id,
+                meter_number: meterNbr,
                 token: tokenInfo.token,
                 token_value_days: tokenInfo.token_value_days,
                 amount: purchaseData.amount
@@ -57,7 +63,8 @@ const listPurchaseHistory = async (req, res) => {
             return res.status(400).send("Meter Number should be 6-digit long")
         }
         if(!registeredMeter){
-            return res.status(400).send("No such meter with id: ", meter)
+            
+            return res.status(400).send({result: null})
         }
 
         console.log(registeredMeter._id)
@@ -83,6 +90,9 @@ const validateToken = async(req, res) => {
     // if(!tokenRegistered){
     //     return res.status(400).send("Invalid token");
     // }
+    if(!tokenRegistered){
+        return res.status(200).json({days: null});
+    }
     const days = tokenRegistered.token_value_days
 
     return res.status(200).json({days: days});

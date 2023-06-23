@@ -1,7 +1,6 @@
 
 require('dotenv').config()
 
-const KEY = process.env.SECRET_KEY;
 
 // Function to generate a random string of specified length
 function generateRandomString(length) {
